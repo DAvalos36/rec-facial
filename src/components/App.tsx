@@ -2,7 +2,28 @@ import { Button, image } from "@nextui-org/react";
 import * as faceapi from "face-api.js";
 import { useEffect, useRef, useState } from "react";
 
-const nC = ["19410251", "19410262", "19410269", "19410586"];
+const nC = [
+	"18410762",
+	"19410250",
+	"19410251",
+	"19410254",
+	"19410255",
+	"19410257",
+	"19410261",
+	"19410262",
+	"19410265",
+	"19410269",
+	"19410529",
+	"19410586",
+	"19410588",
+	"19410591",
+	"19410597",
+	"19410598",
+	"20410499",
+	"B17740215",
+	"C18410942",
+	"C19410231",
+];
 const variaciones = [1, 2, 3, 4, 6, 7, 8, 9];
 
 function App() {
@@ -26,27 +47,31 @@ function App() {
 	async function entrenarRostros() {
 		const labeledFaceDescriptors = await Promise.all(
 			nC.map(async (label, i) => {
-				// fetch image data from urls and convert blob to HTMLImage element
-				const imgUrl = `alumnos/${label}_${i + 1}.jpg`;
-				const img = await faceapi.fetchImage(imgUrl);
+				try {
+					// fetch image data from urls and convert blob to HTMLImage element
+					const imgUrl = `alumnos/${label}_${i + 1}.jpg`;
+					const img = await faceapi.fetchImage(imgUrl);
 
-				// detect the face with the highest score in the image and compute it's landmarks and face descriptor
-				const fullFaceDescription = await faceapi
-					.detectSingleFace(img)
-					.withFaceLandmarks()
-					.withFaceDescriptor();
+					// detect the face with the highest score in the image and compute it's landmarks and face descriptor
+					const fullFaceDescription = await faceapi
+						.detectSingleFace(img)
+						.withFaceLandmarks()
+						.withFaceDescriptor();
 
-				if (!fullFaceDescription) {
-					throw new Error(`no faces detected for ${label}`);
+					if (!fullFaceDescription) {
+						throw new Error(`no faces detected for ${label}`);
+					}
+
+					console.log(`${label} ${i + 1}`);
+
+					const faceDescriptors = [fullFaceDescription.descriptor];
+					return new faceapi.LabeledFaceDescriptors(
+						`${label}_${i + 1}`,
+						faceDescriptors,
+					);
+				} catch (error) {
+					console.log(`Error: ${label}_${i + 1}`);
 				}
-
-				console.log(`${label} ${i + 1}`);
-
-				const faceDescriptors = [fullFaceDescription.descriptor];
-				return new faceapi.LabeledFaceDescriptors(
-					`${label}_${i + 1}`,
-					faceDescriptors,
-				);
 			}),
 		);
 		console.log(JSON.stringify(labeledFaceDescriptors));
@@ -74,6 +99,17 @@ function App() {
 			faceapi.draw.drawDetections(canvas, fullFaceDescriptions);
 			alert("dibujados");
 			const l = await entrenarRostros();
+
+			// Guardar modelo ENTRENADO en un archivo JSON
+			// const json = JSON.stringify(l);
+			// const blob = new Blob([json], { type: "application/json" });
+			// const href = await URL.createObjectURL(blob);
+			// const link = document.createElement("a");
+			// link.href = href;
+			// link.download = "faceDescriptors.json";
+			// document.body.appendChild(link);
+			// link.click();
+			// document.body.removeChild(link);
 
 			const maxDescriptorDistance = 0.6;
 			const faceMatcher = new faceapi.FaceMatcher(l, maxDescriptorDistance);
