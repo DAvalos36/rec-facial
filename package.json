@@ -22,7 +22,8 @@
 		"face-api.js": "^0.22.2",
 		"framer-motion": "^10.16.5",
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react-dom": "^18.2.0",
+		"react-to-print": "^2.14.15"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^6.1.4",
