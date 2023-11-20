@@ -2,6 +2,7 @@ import * as faceapi from "face-api.js";
 import { useEffect, useState } from "react";
 import PantallaCarga from "./PantallaCarga";
 import EntrenarModelo from "./EntrenarModelo";
+import Principal from "./Principal";
 
 function App() {
 	const [modelosCargados, setModelosCargados] = useState(false);
@@ -25,7 +26,7 @@ function App() {
 		return <PantallaCarga />;
 	}
 
-	return <EntrenarModelo />;
+	return <Principal />;
 }
 
 export default App;
