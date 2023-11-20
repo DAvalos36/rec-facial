@@ -1,9 +1,12 @@
-import React, { useRef } from "react";
+import { useRef, useState } from "react";
 import * as faceapi from "face-api.js";
+import infoAlumnos from "../infoAlumno";
 
 function Principal() {
 	const imgRef = useRef<HTMLImageElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
+
+	const [alumnosEncontrados, setAlumnosEncontrados] = useState<string[]>([]);
 
 	async function cargarModeloEntrenado() {
 		const l: string[] = await (await fetch("/faceDescriptors.json")).json();
@@ -30,6 +33,8 @@ function Principal() {
 			faceapi.draw.drawDetections(canvas, fullFaceDescriptions);
 
 			const labeledFaceDescriptors = await cargarModeloEntrenado();
+			canvas.width = imgRef.current.width;
+			canvas.height = imgRef.current.height;
 
 			const maxDescriptorDistance = 0.6;
 			const faceMatcher = new faceapi.FaceMatcher(
@@ -41,12 +46,28 @@ function Principal() {
 				faceMatcher.findBestMatch(fd.descriptor),
 			);
 
+			const ac: string[] = [];
+
 			results.forEach((bestMatch, i) => {
 				const box = fullFaceDescriptions[i].detection.box;
-				const text = bestMatch.toString();
-				const drawBox = new faceapi.draw.DrawBox(box, { label: text });
-				drawBox.draw(canvas);
+				let nC = bestMatch.label;
+				const encontrado = nC !== "unknown";
+				if (encontrado) {
+					nC = nC.split("_")[0];
+					const alumno = infoAlumnos.get(nC);
+					const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno}`;
+					const drawBox = new faceapi.draw.DrawBox(box, { label: nombre });
+					drawBox.draw(canvas);
+					ac.push(nC);
+				} else {
+					const drawBox = new faceapi.draw.DrawBox(box, {
+						label: "Desconocido",
+						boxColor: "red",
+					});
+					drawBox.draw(canvas);
+				}
 			});
+			setAlumnosEncontrados(ac);
 		}
 	}
 
@@ -59,6 +80,7 @@ function Principal() {
 				height={400}
 				style={{ border: "1px solid #000", position: "absolute" }}
 			/>
+			<p>Alumnos : {alumnosEncontrados.toString()}</p>
 		</div>
 	);
 }
