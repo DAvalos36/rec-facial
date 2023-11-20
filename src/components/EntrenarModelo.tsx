@@ -72,35 +72,39 @@ function EntrenarModelo() {
 		const l = await entrenarRostros();
 		console.log(l);
 
-		const labeledDescriptorsArray = l.map((ld) => {
-			return {
-				label: ld.label,
-				descriptors: ld.descriptors,
-			};
+		const arrayLabeled: string[] = [];
+
+		l.forEach((ld) => {
+			arrayLabeled.push(ld.toJSON());
 		});
 
-		// Ahora `labeledDescriptorsArray` es un array serializable que puedes guardar utilizando JSON.stringify()
-		const serializedDescriptors = JSON.stringify(labeledDescriptorsArray);
+		const serializedDescriptors = JSON.stringify(arrayLabeled);
 
 		// Guardar modelo ENTRENADO en un archivo JSON
 		const blob = new Blob([serializedDescriptors], {
 			type: "application/json",
 		});
 		const href = await URL.createObjectURL(blob);
-		if (aRef?.current) {
+		if (aRef && aRef.current) {
+			alert("entra");
 			aRef.current.href = href;
 			aRef.current.download = "faceDescriptors.json";
 		}
+	}
 
-		// const l: faceapi.LabeledFaceDescriptors = await (
-		// 	await fetch("/faceDescriptors.json")
-		// ).json();
-		// console.log(l);
-		// alert("finalizo entrenamiento");
+	async function cargarModeloEntrenado() {
+		const l: string[] = await (await fetch("/faceDescriptors.json")).json();
+		const labeledFaceDescriptors: faceapi.LabeledFaceDescriptors[] = [];
+		l.forEach((ld) => {
+			labeledFaceDescriptors.push(faceapi.LabeledFaceDescriptors.fromJSON(ld));
+		});
+		setEntrenando(false);
+		console.log(labeledFaceDescriptors);
 	}
 
 	useEffect(() => {
-		main();
+		// main();
+		cargarModeloEntrenado();
 	}, []);
 
 	if (entrenando) {
