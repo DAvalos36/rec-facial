@@ -23,7 +23,7 @@ const nC = [
 	"C18410942",
 	"C19410231",
 ];
-const variaciones = [1];
+const variaciones = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const imagenes = nC.flatMap((nc) => {
 	return variaciones.map((v) => {
@@ -49,27 +49,33 @@ function EntrenarModelo() {
 						.withFaceDescriptor();
 
 					if (!fullFaceDescription) {
-						throw new Error(`no faces detected for ${nombre}`);
+						alert(`No se detectaron rostros en la imagen ${nombre}`);
+						// throw new Error(`no faces detected for ${nombre}`);
+					} else {
+						console.log(nombre);
+						setContador((c) => c + 1);
+
+						const faceDescriptors = [fullFaceDescription.descriptor];
+						return new faceapi.LabeledFaceDescriptors(nombre, faceDescriptors);
 					}
-
-					console.log(nombre);
-					setContador((c) => c + 1);
-
-					const faceDescriptors = [fullFaceDescription.descriptor];
-					return new faceapi.LabeledFaceDescriptors(nombre, faceDescriptors);
 				} catch (error) {
-					console.log(`Error: ${nombre}`);
-					throw new Error(`No se encontro la imagen ${nombre}`);
+					console.log(error);
+					console.log(`Error al cargar imagen: ${nombre}`);
+					// throw new Error(`No se encontro la imagen ${nombre}`);
 				}
 			}),
 		);
+		console.log("labeledFaceDescriptors", labeledFaceDescriptors);
 		console.log(JSON.stringify(labeledFaceDescriptors));
 		setEntrenando(false);
 		return labeledFaceDescriptors;
 	}
 
 	async function main() {
-		const l = await entrenarRostros();
+		if (entrenando) {
+			return;
+		}
+		const l = (await entrenarRostros()) as faceapi.LabeledFaceDescriptors[];
 		console.log(l);
 
 		const arrayLabeled: string[] = [];
@@ -85,7 +91,7 @@ function EntrenarModelo() {
 			type: "application/json",
 		});
 		const href = await URL.createObjectURL(blob);
-		if (aRef && aRef.current) {
+		if (aRef?.current) {
 			alert("entra");
 			aRef.current.href = href;
 			aRef.current.download = "faceDescriptors.json";
@@ -103,23 +109,21 @@ function EntrenarModelo() {
 	}
 
 	useEffect(() => {
-		// main();
-		cargarModeloEntrenado();
-	}, []);
-
-	if (entrenando) {
-		return (
-			<div className="min-h-screen flex flex-col justify-center items-center">
-				<div>Entrenando modelo {contador}</div>
-			</div>
-		);
-	}
+		main();
+		// cargarModeloEntrenado();
+	}, [entrenando]);
 
 	return (
 		<div className="min-h-screen flex flex-col justify-center items-center">
-			<h2 className="text-lg">Entrenamiento finalizado</h2>
+			<div className={`text-lg  ${!entrenando && "hidden"}`}>
+				Entrenando modelo {contador}
+			</div>
 
-			<a ref={aRef} href="/">
+			<h2 className={`text-lg  ${entrenando && "hidden"}`}>
+				Entrenamiento finalizado
+			</h2>
+
+			<a ref={aRef} href="/" className={`text-lg  ${entrenando && "hidden"}`}>
 				Descargar
 			</a>
 		</div>
