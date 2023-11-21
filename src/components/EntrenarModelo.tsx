@@ -72,26 +72,38 @@ function EntrenarModelo() {
 	}
 
 	async function main() {
-		if (entrenando) {
+		if (!entrenando) {
 			return;
 		}
 		const l = (await entrenarRostros()) as faceapi.LabeledFaceDescriptors[];
+
+		// alert("Termino de entrenar");
+		// alert(JSON.stringify(l));
 		console.log(l);
 
 		const arrayLabeled: string[] = [];
-
 		l.forEach((ld) => {
-			arrayLabeled.push(ld.toJSON());
+			if (ld !== undefined) {
+				arrayLabeled.push(ld.toJSON());
+			}
 		});
 
-		const serializedDescriptors = JSON.stringify(arrayLabeled);
-
 		// Guardar modelo ENTRENADO en un archivo JSON
+		// } catch (error) {
+		// 	alert("Ocurrio un error");
+		// 	alert(JSON.stringify(error));
+		// 	return;
+		// }
+		const serializedDescriptors = JSON.stringify(arrayLabeled);
 		const blob = new Blob([serializedDescriptors], {
 			type: "application/json",
 		});
 		const href = await URL.createObjectURL(blob);
+		console.log(href);
+		window.open(href, "_blank");
+
 		if (aRef?.current) {
+			// ! No se coloca el link en la etiqueta A
 			alert("entra");
 			aRef.current.href = href;
 			aRef.current.download = "faceDescriptors.json";
