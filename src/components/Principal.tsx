@@ -2,11 +2,18 @@ import { useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import infoAlumnos from "../infoAlumno";
 
+type infoEncontrado = {
+	nc: string;
+	distancia: number;
+};
+
 function Principal() {
 	const imgRef = useRef<HTMLImageElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-	const [alumnosEncontrados, setAlumnosEncontrados] = useState<string[]>([]);
+	const [alumnosEncontrados, setAlumnosEncontrados] = useState<
+		infoEncontrado[]
+	>([]);
 
 	async function cargarModeloEntrenado() {
 		const l: string[] = await (await fetch("/faceDescriptors.json")).json();
@@ -46,7 +53,7 @@ function Principal() {
 				faceMatcher.findBestMatch(fd.descriptor),
 			);
 
-			const ac: string[] = [];
+			const ac: infoEncontrado[] = [];
 
 			results.forEach((bestMatch, i) => {
 				const box = fullFaceDescriptions[i].detection.box;
@@ -58,7 +65,7 @@ function Principal() {
 					const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno}`;
 					const drawBox = new faceapi.draw.DrawBox(box, { label: nombre });
 					drawBox.draw(canvas);
-					ac.push(nC);
+					ac.push({ nc: nC, distancia: bestMatch.distance });
 				} else {
 					const drawBox = new faceapi.draw.DrawBox(box, {
 						label: "Desconocido",
