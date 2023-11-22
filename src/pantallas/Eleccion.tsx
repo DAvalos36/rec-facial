@@ -1,8 +1,10 @@
 // App.tsx
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ImageSlider from '../components/ImageSlider';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from '@nextui-org/react';
 import ImageUploader from '../components/ImageUploader';
+import { useStoreImg } from 'zustand-img';
+import { useLocation } from 'wouter';
 
 const App: React.FC = () => {
     const images = ['amigos1.webp', 'amigos2.png', 'amigos3.jpeg'];
@@ -10,6 +12,16 @@ const App: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
     const [photo, setPhoto] = useState<string | null>(null);
+
+    const [location, setLocation] = useLocation()
+    const link = useStoreImg((s) => s.link);
+
+    useEffect(() => {
+      if(link !== '') {
+        setLocation('/foto')
+      }
+    }, [link])
+    
 
     const startCamera = async () => {
         try {

@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import infoAlumnos from "../infoAlumno";
 import { useReactToPrint } from "react-to-print";
 import { Pdf } from "../components/Pdf";
 import { Button, ScrollShadow, User } from "@nextui-org/react";
+import { useStoreImg } from "zustand-img";
+import { useLocation } from "wouter";
 
 export type infoEncontrado = {
   nc: string;
@@ -18,6 +20,16 @@ function Principal() {
   });
 
   const [alumnosEncontrados, setAlumnosEncontrados] = useState<infoEncontrado[]>([]);
+
+  const [location, setLocation] = useLocation();
+	const link = useStoreImg((s) => s.link);
+
+  useEffect(() => {
+    if (link === "") {
+      setLocation("/");
+    }
+	}, []);
+    
 
   async function cargarModeloEntrenado() {
     const l: string[] = await (await fetch("/faceDescriptors.json")).json();
@@ -89,7 +101,7 @@ function Principal() {
   return (
     <div className="flex-col min-h-screen flex justify-center self-center" style={{ backgroundColor: '#F2F2F2' }}>
       <div className="max-w-fit py-4 flex justify-center self-center" id="miDiv">
-        <img className='hidden' ref={imgRef} src="/prb.jpeg" onLoad={a} alt="FOTO" id="imgPrueba contenedor-imagen" />
+        <img className='hidden' ref={imgRef} src={link} onLoad={a} alt="FOTO" id="imgPrueba contenedor-imagen" />
       </div>
 
       <div className="py-unit-sm flex justify-center self-center flex-col mb-7">
@@ -113,7 +125,7 @@ function Principal() {
         </ScrollShadow>
 
         <div className="hidden">
-          <Pdf ref={componentRef} imagen="/prb.jpeg" alumnos={alumnosEncontrados} />
+          <Pdf ref={componentRef} imagen={link} alumnos={alumnosEncontrados} />
         </div>
 
         <Button className="mx-20" color="warning" variant="shadow" onClick={() => handlePrint()}>Guardar PDF</Button>
