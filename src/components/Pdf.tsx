@@ -21,15 +21,25 @@ export const Pdf = forwardRef<HTMLDivElement, Props>((props, ref) => {
         <div className="mt-4">
           <p className="mb-3 font-medium text-lg">La imagen usada fue:</p>
           <img src={props.imagen} />
+          <p>
+            Los estudiantes encontrados teniendo en cuenta a su numero de
+            control y su nombre fueron los siguientes:
+          </p>
+
           {props.alumnos.map((alumno) => (
             <div key={alumno.nc}>
               <p className="mb-3 font-medium text-lg">
-                Los estudiantes encontrados fueron los siguientes: <br />
-                <b>{alumno.nc.toString()}</b> del{"\n"}
+                <br />
+                <b>
+                  Nombre: {infoAlumno.get(alumno.nc)?.nombre}
+                  {infoAlumno.get(alumno.nc)?.apellido_paterno}
+                  {infoAlumno.get(alumno.nc)?.apellido_materno}
+                </b>
               </p>
               <p>
-                Los numeros de control fueron los siguientes: <br />
-                <b>{infoAlumno.get(alumno.nc)?.nombre}</b> del{"\n"}
+                <br />
+                <b>Numero de control: {alumno.nc.toString()}</b>
+                <b></b>
               </p>
             </div>
           ))}

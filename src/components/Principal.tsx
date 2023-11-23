@@ -3,6 +3,7 @@ import * as faceapi from "face-api.js";
 import infoAlumnos from "../infoAlumno";
 import { useReactToPrint } from "react-to-print";
 import {Pdf} from "./Pdf"
+import { Button } from "@nextui-org/react";
 
 export type infoEncontrado = {
   nc: string;
@@ -95,7 +96,13 @@ function Principal() {
         style={{ border: "1px solid #000", position: "absolute" }}
       />
       <p>Alumnos : {alumnosEncontrados.toString()}</p>
-	  <Pdf imagen="/prb.jpeg" alumnos={alumnosEncontrados}></Pdf>
+      <div className="hidden">
+        <Pdf ref={componentRef} imagen="/prb.jpeg" alumnos={alumnosEncontrados}></Pdf>
+
+      </div>
+	  
+
+    <Button onClick={()=>handlePrint()}>Guardar PDF</Button>
     </div>
   );
 }
