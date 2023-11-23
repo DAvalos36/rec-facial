@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import PantallaCarga from "./PantallaCarga";
 import EntrenarModelo from "./EntrenarModelo";
 import Principal from "./Principal";
+import Inicio from "pantallas/inicio";
 
 function App() {
 	const [modelosCargados, setModelosCargados] = useState(false);
@@ -26,7 +27,7 @@ function App() {
 		return <PantallaCarga />;
 	}
 
-	return <Principal />;
+	return <Inicio />;
 }
 
 export default App;
