@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import PantallaCarga from "./PantallaCarga";
 import EntrenarModelo from "./EntrenarModelo";
 import Principal from "./Principal";
-import Inicio from "pantallas/inicio";
+// import Inicio from "pantallas/inicio";
+import Router from "../Router";
 
 function App() {
 	const [modelosCargados, setModelosCargados] = useState(false);
@@ -27,7 +28,7 @@ function App() {
 		return <PantallaCarga />;
 	}
 
-	return <Inicio />;
+	return <Router />;
 }
 
 export default App;
