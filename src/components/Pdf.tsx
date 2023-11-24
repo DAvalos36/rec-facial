@@ -1,52 +1,53 @@
 import React, { forwardRef, RefObject } from "react";
+import { infoEncontrado } from "./Principal";
+import infoAlumno from "../infoAlumno";
 
 interface Props {
-	grado: string;
-	grupo: string;
-	nombreAlumno: string;
-	fechaInicio: string;
-	motivo: string;
-	quienSolicita: string;
-	moduloHora: string;
+  alumnos: infoEncontrado[];
+  imagen: string;
 }
 
-export const PdfJustificanteHoraODia = forwardRef<HTMLDivElement, Props>(
-	(props, ref) => {
-		return (
-			<>
-				<style>
-					{`
+export const Pdf = forwardRef<HTMLDivElement, Props>((props, ref) => {
+  return (
+    <>
+      <style>
+        {`
         @page {
           margin: 1cm 1cm 1cm 1cm;
         }
       `}
-				</style>
-				<div ref={ref as RefObject<HTMLDivElement>} className="w-full px-8 ">
-					<div className="mt-4">
-						<p className="mb-3 font-medium text-lg">
-							Se les notifica que el estudiante <b>{props.nombreAlumno}</b> del{" "}
-							<b>
-								{props.grado}° {props.grupo}
-							</b>{" "}
-							no asistirá{" "}
-							{props.moduloHora === ""
-								? `el dia <b>${props.fechaInicio}</b>`
-								: `a la hora <b>${props.moduloHora}</b> del dia <b>${props.fechaInicio}</b>`}{" "}
-							del teniendo como motivo <b>{props.motivo}</b>.
-						</p>
+      </style>
+      <div ref={ref as RefObject<HTMLDivElement>} className="w-full px-8 ">
+        <div className="mt-4">
+          <p className="mb-3 font-medium text-lg">La imagen usada fue:</p>
+          <img src={props.imagen} />
+          <p>
+            Los estudiantes encontrados teniendo en cuenta a su numero de
+            control y su nombre fueron los siguientes:
+          </p>
 
-						<h3 className="font-bold mb-14 text-center text-lg">
-							Favor de firmar de enterados
-						</h3>
-						<h3 className="font-bold my-14 text-center text-lg">Atentamente</h3>
-						<h3 className="font-bold text-center text-lg border-t-2 border-black">
-							{props.quienSolicita}
-						</h3>
-					</div>
-				</div>
-			</>
-		);
-	},
-);
+          {props.alumnos.map((alumno) => (
+            <div key={alumno.nc}>
+              <p className="mb-3 font-medium text-lg">
+                <br />
+                <b>
+                  Nombre: {infoAlumno.get(alumno.nc)?.nombre}
+                  {infoAlumno.get(alumno.nc)?.apellido_paterno}
+                  {infoAlumno.get(alumno.nc)?.apellido_materno}
+                </b>
+              </p>
+              <p>
+                <br />
+                <b>Numero de control: {alumno.nc.toString()}</b>
+                <b></b>
+              </p>
+            </div>
+          ))}
+          <p></p>
+        </div>
+      </div>
+    </>
+  );
+});
 
-PdfJustificanteHoraODia.displayName = "Justificante de un dia o modulo.";
+Pdf.displayName = "Justificante de un dia o modulo.";
