@@ -3,7 +3,7 @@ import * as faceapi from "face-api.js";
 import infoAlumnos from "../infoAlumno";
 import { useReactToPrint } from "react-to-print";
 import {Pdf} from "./Pdf"
-import { Button } from "@nextui-org/react";
+import { Button, ScrollShadow, User } from "@nextui-org/react";
 
 export type infoEncontrado = {
   nc: string;
@@ -95,10 +95,28 @@ function Principal() {
         height={400}
         style={{ border: "1px solid #000", position: "absolute" }}
       />
-      <p>Alumnos : {alumnosEncontrados.toString()}</p>
+      <ScrollShadow>
+		{
+			alumnosEncontrados.map((alumno, index) => {
+				const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(alumno.nc)?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`
+        const precision = (1-alumno.distancia)*100
+				return (
+					<div className="flex justify-between my-5 w-full">
+						<User
+							name={nombre}
+							description={alumno.nc}
+							avatarProps={{
+								src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+							}}
+						/>
+            <p>{precision.toString().split('.')[0] } %</p>
+					</div>
+				);
+			})
+		}
+	  </ScrollShadow>
       <div className="hidden">
-        <Pdf ref={componentRef} imagen="/prb.jpeg" alumnos={alumnosEncontrados}></Pdf>
-
+        <Pdf ref={componentRef} imagen="/prb.jpeg" alumnos={alumnosEncontrados}/>
       </div>
 	  
 
