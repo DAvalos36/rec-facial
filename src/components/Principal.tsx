@@ -106,7 +106,7 @@ function Principal() {
 							name={nombre}
 							description={alumno.nc}
 							avatarProps={{
-								src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+								src: `/fotos/${alumno.nc}.jpg`,
 							}}
 						/>
             <p>{precision.toString().split('.')[0] } %</p>
