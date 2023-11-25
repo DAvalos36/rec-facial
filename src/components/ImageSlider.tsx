@@ -26,10 +26,16 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images, interval = 3000 }) =>
   }, [images, interval]);
 
   return (
-    <div className="">
-    <Image className="w-unit-8xl h-unit-6xl object-cover" src={images[index]} alt={`Slide ${index + 1}`} />
-    </div>
-  );
+			<div className="">
+				{images.map((link, i) => (
+					<Image
+						className={`w-unit-8xl h-unit-6xl object-cover animate-appearance-in ${index !== i && 'hidden'}`}
+						src={link}
+						alt={`Slide ${index + 1}`}
+					/>
+				))}
+			</div>
+		);
 };
 
 export default ImageSlider;
