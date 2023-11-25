@@ -18,11 +18,13 @@
 		"typecheck": "tsc --project tsconfig.json --noEmit"
 	},
 	"dependencies": {
+		"@lottiefiles/react-lottie-player": "^3.5.3",
 		"@nextui-org/react": "^2.2.9",
 		"face-api.js": "^0.22.2",
 		"framer-motion": "^10.16.5",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"react-spring": "^9.7.3",
 		"react-to-print": "^2.14.15"
 	},
 	"devDependencies": {
