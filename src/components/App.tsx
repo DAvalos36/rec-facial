@@ -5,7 +5,6 @@ import EntrenarModelo from "./EntrenarModelo";
 import Principal from "./Principal";
 // import Inicio from "pantallas/inicio";
 import Router from "../Router";
-import "../styles/global.css";
 
 function App() {
 	const [modelosCargados, setModelosCargados] = useState(false);
