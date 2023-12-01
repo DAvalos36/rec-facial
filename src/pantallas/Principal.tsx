@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import infoAlumnos from "../infoAlumno";
 import { useReactToPrint } from "react-to-print";
-import {Pdf} from "../components/Pdf"
+import { Pdf } from "../components/Pdf";
 import { Button, ScrollShadow, User } from "@nextui-org/react";
 
 export type infoEncontrado = {
@@ -12,16 +12,12 @@ export type infoEncontrado = {
 
 function Principal() {
   const imgRef = useRef<HTMLImageElement>(null);
-  // const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const componentRef = useRef<HTMLDivElement | null>(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
 
-  const [alumnosEncontrados, setAlumnosEncontrados] = useState<
-    infoEncontrado[]
-  >([]);
+  const [alumnosEncontrados, setAlumnosEncontrados] = useState<infoEncontrado[]>([]);
 
   async function cargarModeloEntrenado() {
     const l: string[] = await (await fetch("/faceDescriptors.json")).json();
@@ -33,25 +29,21 @@ function Principal() {
   }
 
   async function a() {
-    const canvas = faceapi.createCanvasFromMedia(imgRef.current as HTMLImageElement);
-    if (imgRef?.current) {
-      document.body.append(canvas)
-      // const canvas = canvasRef.current;
-      canvas.width = imgRef.current.width;
-      canvas.height = imgRef.current.height;
+    const img = imgRef.current as HTMLImageElement;
+    const canvas = faceapi.createCanvasFromMedia(img);
+
+    // Obtén el contenedor de la imagen o el componente de la aplicación
+    const container = document.getElementById('contenedor-imagen') || document.body;
+
+    if (container) {
+      container.append(canvas);
 
       const fullFaceDescriptions = await faceapi
-        .detectAllFaces(imgRef.current as HTMLImageElement)
+        .detectAllFaces(img)
         .withFaceLandmarks()
         .withFaceDescriptors();
-      // fullFaceDescriptions = faceapi.resizeResults(fullFaceDescriptions);
-      console.log(fullFaceDescriptions);
-
-      faceapi.draw.drawDetections(canvas, fullFaceDescriptions);
 
       const labeledFaceDescriptors = await cargarModeloEntrenado();
-      canvas.width = imgRef.current.width;
-      canvas.height = imgRef.current.height;
 
       const maxDescriptorDistance = 0.6;
       const faceMatcher = new faceapi.FaceMatcher(
@@ -73,8 +65,11 @@ function Principal() {
           nC = nC.split("_")[0];
           const alumno = infoAlumnos.get(nC);
           const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno}`;
+
+          // Dibujar un cuadro alrededor de cada rostro
           const drawBox = new faceapi.draw.DrawBox(box, { label: nombre });
           drawBox.draw(canvas);
+
           ac.push({ nc: nC, distancia: bestMatch.distance });
         } else {
           const drawBox = new faceapi.draw.DrawBox(box, {
@@ -84,40 +79,41 @@ function Principal() {
           drawBox.draw(canvas);
         }
       });
+
       setAlumnosEncontrados(ac);
     }
   }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center">
-      <img ref={imgRef} src="/prb.jpeg" onLoad={a} alt="FOTO" id="imgPrueba" />
-      
+      <div id="contenedor-imagen">
+        <img ref={imgRef} src="/prb.jpeg" onLoad={a} alt="FOTO" id="imgPrueba" />
+      </div>
+
       <ScrollShadow>
-		{
-			alumnosEncontrados.map((alumno, index) => {
-				const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(alumno.nc)?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`
-        const precision = (1-alumno.distancia)*100
-				return (
-					<div className="flex justify-between my-5 w-full">
-						<User
-							name={nombre}
-							description={alumno.nc}
-							avatarProps={{
-								src: `/fotos/${alumno.nc}.jpg`,
-							}}
-						/>
-            <p>{precision.toString().split('.')[0] } %</p>
-					</div>
-				);
-			})
-		}
-	  </ScrollShadow>
+        {alumnosEncontrados.map((alumno, index) => {
+          const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(alumno.nc)?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`;
+          const precision = (1 - alumno.distancia) * 100;
+          return (
+            <div className="flex justify-between my-5 w-full" key={index}>
+              <User
+                name={nombre}
+                description={alumno.nc}
+                avatarProps={{
+                  src: `/fotos/${alumno.nc}.jpg`,
+                }}
+              />
+              <p>{precision.toString().split('.')[0]} %</p>
+            </div>
+          );
+        })}
+      </ScrollShadow>
+
       <div className="hidden">
         <Pdf ref={componentRef} imagen="/prb.jpeg" alumnos={alumnosEncontrados}/>
       </div>
-	  
 
-    <Button onClick={()=>handlePrint()}>Guardar PDF</Button>
+      <Button onClick={() => handlePrint()}>Guardar PDF</Button>
     </div>
   );
 }
