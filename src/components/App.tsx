@@ -2,7 +2,8 @@ import * as faceapi from "face-api.js";
 import { useEffect, useState } from "react";
 import PantallaCarga from "./PantallaCarga";
 import EntrenarModelo from "./EntrenarModelo";
-import Principal from "./Principal";
+import Principal from "../pantallas/Principal";
+import "styles/global.css";
 // import Inicio from "pantallas/inicio";
 import Router from "../Router";
 

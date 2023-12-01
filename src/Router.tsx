@@ -1,5 +1,5 @@
 import EntrenarModelo from "components/EntrenarModelo";
-import Principal from "components/Principal";
+import Principal from "pantallas/Principal";
 import Eleccion from "pantallas/Eleccion";
 import Inicio from "pantallas/Inicio";
 import { Route } from "wouter";

@@ -1,5 +1,5 @@
 import React, { forwardRef, RefObject } from "react";
-import { infoEncontrado } from "./Principal";
+import { infoEncontrado } from "../pantallas/Principal";
 import infoAlumno from "../infoAlumno";
 
 interface Props {

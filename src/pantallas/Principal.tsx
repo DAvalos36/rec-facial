@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import infoAlumnos from "../infoAlumno";
 import { useReactToPrint } from "react-to-print";
-import {Pdf} from "./Pdf"
+import {Pdf} from "../components/Pdf"
 import { Button, ScrollShadow, User } from "@nextui-org/react";
 
 export type infoEncontrado = {
@@ -12,7 +12,7 @@ export type infoEncontrado = {
 
 function Principal() {
   const imgRef = useRef<HTMLImageElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const componentRef = useRef<HTMLDivElement | null>(null);
   const handlePrint = useReactToPrint({
@@ -33,8 +33,10 @@ function Principal() {
   }
 
   async function a() {
-    if (imgRef?.current && canvasRef && canvasRef.current) {
-      const canvas = canvasRef.current;
+    const canvas = faceapi.createCanvasFromMedia(imgRef.current as HTMLImageElement);
+    if (imgRef?.current) {
+      document.body.append(canvas)
+      // const canvas = canvasRef.current;
       canvas.width = imgRef.current.width;
       canvas.height = imgRef.current.height;
 
@@ -89,12 +91,7 @@ function Principal() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center">
       <img ref={imgRef} src="/prb.jpeg" onLoad={a} alt="FOTO" id="imgPrueba" />
-      <canvas
-        ref={canvasRef}
-        width={600}
-        height={400}
-        style={{ border: "1px solid #000", position: "absolute" }}
-      />
+      
       <ScrollShadow>
 		{
 			alumnosEncontrados.map((alumno, index) => {
