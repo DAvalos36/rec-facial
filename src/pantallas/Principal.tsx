@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import infoAlumnos from "../infoAlumno";
 import { useReactToPrint } from "react-to-print";
 import { Pdf } from "../components/Pdf";
 import { Button, ScrollShadow, User } from "@nextui-org/react";
+import { useStoreImg } from "zustand-img";
+import { useLocation } from "wouter";
 
 export type infoEncontrado = {
   nc: string;
@@ -18,6 +20,16 @@ function Principal() {
   });
 
   const [alumnosEncontrados, setAlumnosEncontrados] = useState<infoEncontrado[]>([]);
+
+  const [location, setLocation] = useLocation();
+	const link = useStoreImg((s) => s.link);
+
+  useEffect(() => {
+    if (link === "") {
+      setLocation("/");
+    }
+	}, []);
+    
 
   async function cargarModeloEntrenado() {
     const l: string[] = await (await fetch("/faceDescriptors.json")).json();
@@ -87,7 +99,7 @@ function Principal() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center">
       <div id="contenedor-imagen">
-        <img ref={imgRef} src="/prb.jpeg" onLoad={a} alt="FOTO" id="imgPrueba" />
+        <img ref={imgRef} src={link} onLoad={a} alt="FOTO" id="imgPrueba" />
       </div>
 
       <ScrollShadow>
