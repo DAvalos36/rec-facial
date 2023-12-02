@@ -11,6 +11,7 @@ import {
 } from "@nextui-org/react";
 import ImageUploader from "../components/ImageUploader";
 import * as faceapi from "face-api.js";
+import infoAlumnos from "../infoAlumno";
 
 const App: React.FC = () => {
   const images = ["amigos1.webp", "amigos2.png", "amigos3.jpeg"];
@@ -20,15 +21,16 @@ const App: React.FC = () => {
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadModels = async () => {
-      await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
-      await faceapi.nets.faceLandmark68Net.loadFromUri("/models");
-      await faceapi.nets.faceRecognitionNet.loadFromUri("/models");
-    };
-
-    loadModels();
-  }, []);
+  async function cargarModeloEntrenado() {
+			const l: string[] = await (await fetch("/faceDescriptors.json")).json();
+			const labeledFaceDescriptors: faceapi.LabeledFaceDescriptors[] = [];
+			l.forEach((ld) => {
+				labeledFaceDescriptors.push(
+					faceapi.LabeledFaceDescriptors.fromJSON(ld),
+				);
+			});
+			return labeledFaceDescriptors;
+		}
 
   const startCamera = async () => {
     try {
@@ -38,7 +40,7 @@ const App: React.FC = () => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
 
-        videoRef.current.addEventListener("loadeddata", () => {
+        videoRef.current.addEventListener("loadeddata", async () => {
           if (canvasRef.current) {
             const canvas = canvasRef.current;
             const displaySize = {
@@ -46,7 +48,11 @@ const App: React.FC = () => {
               height: videoRef.current?.videoHeight || 480,
             };
             faceapi.matchDimensions(canvas, displaySize);
-
+            const labeledFaceDescriptors = await cargarModeloEntrenado();
+            const faceMatcher = new faceapi.FaceMatcher(
+              labeledFaceDescriptors,
+              0.6,
+            );
             setInterval(async () => {
               const detections = await faceapi
                 .detectAllFaces(
@@ -55,15 +61,45 @@ const App: React.FC = () => {
                 )
                 .withFaceLandmarks()
                 .withFaceDescriptors();
-
-              const resizedDetections = faceapi.resizeResults(
-                detections,
-                displaySize
-              );
-              canvas
+                
+                const resizedDetections = faceapi.resizeResults(
+                  detections,
+                  displaySize
+                );
+                canvas
                 .getContext("2d")
                 ?.clearRect(0, 0, canvas.width, canvas.height);
-              faceapi.draw.drawDetections(canvas, resizedDetections);
+                const results = detections.map((fd) =>
+                  faceMatcher.findBestMatch(fd.descriptor),
+                );
+
+                results.forEach((bestMatch, i) => {
+                  const box =
+                    detections[i].detection.box;
+                  let nC = bestMatch.label;
+                  const encontrado = nC !== "unknown";
+                  if (encontrado) {
+                    nC = nC.split("_")[0];
+                    const alumno = infoAlumnos.get(nC);
+                    const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno}`;
+                    const drawBox = new faceapi.draw.DrawBox(
+                      box,
+                      { label: nombre },
+                    );
+                    drawBox.draw(canvas);
+                  } else {
+                    const drawBox = new faceapi.draw.DrawBox(
+                      box,
+                      {
+                        label: "Desconocido",
+                        boxColor: "red",
+                      },
+                    );
+                    drawBox.draw(canvas);
+                  }
+                });
+
+              // faceapi.draw.drawDetections(canvas, resizedDetections);
             }, 1000);
           }
         });
