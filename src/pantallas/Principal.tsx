@@ -15,6 +15,7 @@ export type infoEncontrado = {
 function Principal() {
   const imgRef = useRef<HTMLImageElement>(null);
   const componentRef = useRef<HTMLDivElement | null>(null);
+  const [cargando, setCargando] = useState(true)
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
@@ -95,6 +96,7 @@ function Principal() {
       });
 
       setAlumnosEncontrados(ac);
+      setCargando(false)
     }
   }
 
@@ -105,7 +107,7 @@ function Principal() {
       </div>
 
       <div className="py-unit-sm flex justify-center self-center flex-col mb-7">
-        <ScrollShadow>
+        <ScrollShadow className="w-full">
           {alumnosEncontrados.map((alumno, index) => {
             const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(alumno.nc)?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`;
             const precision = (1 - alumno.distancia) * 100;
@@ -128,7 +130,7 @@ function Principal() {
           <Pdf ref={componentRef} imagen={link} alumnos={alumnosEncontrados} />
         </div>
 
-        <Button className="mx-20" color="warning" variant="shadow" onClick={() => handlePrint()}>Guardar PDF</Button>
+        <Button className="mx-20" color="warning" variant="shadow" onClick={() => handlePrint() } isLoading={cargando}>Guardar PDF</Button>
       </div>
     </div>
   );
