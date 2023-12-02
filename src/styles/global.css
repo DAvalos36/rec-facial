@@ -1,6 +1,4 @@
 canvas {
-    position: absolute;
-    top: 0;
-    border-color: black;
-    border-width: 2px;
+    width: 75%;
+    border-radius: 20px;
 }

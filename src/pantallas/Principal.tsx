@@ -34,9 +34,11 @@ function Principal() {
 
     // Obtén el contenedor de la imagen o el componente de la aplicación
     const container = document.getElementById('contenedor-imagen') || document.body;
+    const divDestino = document.getElementById('miDiv') || document.body;
 
-    if (container) {
+    if (container && divDestino) {
       container.append(canvas);
+      divDestino.append(canvas);
 
       const fullFaceDescriptions = await faceapi
         .detectAllFaces(img)
@@ -85,35 +87,37 @@ function Principal() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center">
-      <div id="contenedor-imagen">
-        <img ref={imgRef} src="/prb.jpeg" onLoad={a} alt="FOTO" id="imgPrueba" />
+    <div className="flex-col min-h-screen flex justify-center self-center" style={{ backgroundColor: '#F2F2F2' }}>
+      <div className="max-w-fit py-4 flex justify-center self-center" id="miDiv">
+        <img className='hidden' ref={imgRef} src="/prb.jpeg" onLoad={a} alt="FOTO" id="imgPrueba contenedor-imagen" />
       </div>
 
-      <ScrollShadow>
-        {alumnosEncontrados.map((alumno, index) => {
-          const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(alumno.nc)?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`;
-          const precision = (1 - alumno.distancia) * 100;
-          return (
-            <div className="flex justify-between my-5 w-full" key={index}>
-              <User
-                name={nombre}
-                description={alumno.nc}
-                avatarProps={{
-                  src: `/fotos/${alumno.nc}.jpg`,
-                }}
-              />
-              <p>{precision.toString().split('.')[0]} %</p>
-            </div>
-          );
-        })}
-      </ScrollShadow>
+      <div className="py-unit-sm flex justify-center self-center flex-col mb-7">
+        <ScrollShadow>
+          {alumnosEncontrados.map((alumno, index) => {
+            const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(alumno.nc)?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`;
+            const precision = (1 - alumno.distancia) * 100;
+            return (
+              <div className="flex justify-between my-5 w-full" key={index}>
+                <User
+                  name={nombre}
+                  description={alumno.nc}
+                  avatarProps={{
+                    src: `/fotos/${alumno.nc}.jpg`,
+                  }}
+                />
+                <p className="px-6 font-bold text-orange-700">{precision.toString().split('.')[0]} %</p>
+              </div>
+            );
+          })}
+        </ScrollShadow>
 
-      <div className="hidden">
-        <Pdf ref={componentRef} imagen="/prb.jpeg" alumnos={alumnosEncontrados}/>
+        <div className="hidden">
+          <Pdf ref={componentRef} imagen="/prb.jpeg" alumnos={alumnosEncontrados} />
+        </div>
+
+        <Button className="mx-20" color="warning" variant="shadow" onClick={() => handlePrint()}>Guardar PDF</Button>
       </div>
-
-      <Button onClick={() => handlePrint()}>Guardar PDF</Button>
     </div>
   );
 }

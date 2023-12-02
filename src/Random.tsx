@@ -24,7 +24,7 @@ const nombreAleatorio = () => {
   
 	return (
 	  <div className= "container">
-		<h1 className="max-w-screen-md mx-auto text-lg p-6 mt-6 absolute inset-x-0 top-0 text-center bg-customGray text-white p-4 rounded-2xl ">Nuestra Inteligencia Artificial Está Analizando Los Rostros... {nombreActual}</h1>
+		<h1 className="max-w-screen-md mx-auto text-lg p-6 mt-6 absolute inset-x-0 top-0 text-center bg-customGray text-white p-4 rounded-2xl ">Nuestra IA está analizando los rostros... <span className="text-white font-bold">{nombreActual}</span></h1>
 	  </div>
 	);
   };
