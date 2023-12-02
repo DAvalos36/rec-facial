@@ -14,6 +14,7 @@ function App() {
 			faceapi.loadSsdMobilenetv1Model("/models"),
 			faceapi.loadFaceLandmarkModel("/models"),
 			faceapi.loadFaceRecognitionModel("/models"),
+			faceapi.nets.tinyFaceDetector.loadFromUri("/models")
 		]).then(() => {
 			setModelosCargados(true);
 			return true;
