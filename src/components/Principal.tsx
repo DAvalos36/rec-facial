@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import infoAlumnos from "../infoAlumno";
-import { useReactToPrint } from "react-to-print";
-import {Pdf} from "./Pdf"
+import { PDFDocument } from "pdf-lib";
 import { Button, ScrollShadow, User } from "@nextui-org/react";
+import { useReactToPrint } from "react-to-print";
 
 export type infoEncontrado = {
   nc: string;
@@ -13,15 +13,12 @@ export type infoEncontrado = {
 function Principal() {
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const componentRef = useRef<HTMLDivElement | null>(null);
+
+  const [alumnosEncontrados, setAlumnosEncontrados] = useState<infoEncontrado[]>([]);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
-
-  const [alumnosEncontrados, setAlumnosEncontrados] = useState<
-    infoEncontrado[]
-  >([]);
 
   async function cargarModeloEntrenado() {
     const l: string[] = await (await fetch("/faceDescriptors.json")).json();
@@ -42,7 +39,6 @@ function Principal() {
         .detectAllFaces(imgRef.current as HTMLImageElement)
         .withFaceLandmarks()
         .withFaceDescriptors();
-      // fullFaceDescriptions = faceapi.resizeResults(fullFaceDescriptions);
       console.log(fullFaceDescriptions);
 
       faceapi.draw.drawDetections(canvas, fullFaceDescriptions);
@@ -86,6 +82,57 @@ function Principal() {
     }
   }
 
+  async function handleDownloadPdf() {
+    const pdfDoc = await PDFDocument.create();
+
+    // Crear una nueva página
+    const page = pdfDoc.addPage();
+
+    // Establecer el tamaño de la página
+    const { width, height } = page.getSize();
+
+    // Dibujar información adicional
+    const textSize = 18;
+    const textHeight = 50;
+    page.drawText("Personas encontradas:", { x: 50, y: height - textHeight, size: textSize });
+
+    // Agregar información de alumnosEncontrados
+    alumnosEncontrados.forEach((alumno, index) => {
+      const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(
+        alumno.nc
+      )?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`;
+      const precision = (1 - alumno.distancia) * 100;
+
+      const textYName = height - textHeight - (index + 1) * (textSize + 2); // Agregar 2 para dejar dos líneas
+      const textYDistance = textYName - textSize; // Separación entre nombre y distancia
+
+      // Ajustar la posición del texto si se desborda
+      if (textYDistance >= 0) {
+        // Dibujar el nombre en una línea
+        page.drawText(`${index + 1}. Nombre: ${nombre}`, {
+          x: 50,
+          y: textYName,
+          size: textSize,
+        });
+
+        // Dibujar la distancia en otra línea
+        
+      }
+    });
+
+    // Guardar el PDF en formato Uint8Array
+    const pdfBytes = await pdfDoc.save();
+
+    // Crear un Blob con el contenido del PDF
+    const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+
+    // Crear un enlace temporal y descargar el archivo
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(pdfBlob);
+    link.download = "Alumnos.pdf";
+    link.click();
+  }
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center">
       <img ref={imgRef} src="/prb.jpeg" onLoad={a} alt="FOTO" id="imgPrueba" />
@@ -96,31 +143,29 @@ function Principal() {
         style={{ border: "1px solid #000", position: "absolute" }}
       />
       <ScrollShadow>
-		{
-			alumnosEncontrados.map((alumno, index) => {
-				const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(alumno.nc)?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`
-        const precision = (1-alumno.distancia)*100
-				return (
-					<div className="flex justify-between my-5 w-full">
-						<User
-							name={nombre}
-							description={alumno.nc}
-							avatarProps={{
-								src: `/fotos/${alumno.nc}.jpg`,
-							}}
-						/>
-            <p>{precision.toString().split('.')[0] } %</p>
-					</div>
-				);
-			})
-		}
-	  </ScrollShadow>
-      <div className="hidden">
-        <Pdf ref={componentRef} imagen="/prb.jpeg" alumnos={alumnosEncontrados}/>
-      </div>
-	  
-
-    <Button onClick={()=>handlePrint()}>Guardar PDF</Button>
+        {alumnosEncontrados.map((alumno, index) => {
+          const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(
+            alumno.nc
+          )?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`;
+          const precision = (1 - alumno.distancia) * 100;
+          return (
+            <div className="flex justify-between my-5 w-full" key={index}>
+              <User
+                name={nombre}
+                description={alumno.nc}
+                avatarProps={{
+                  src: `/fotos/${alumno.nc}.jpg`,
+                }}
+              />
+              <p>{precision.toString().split(".")[0]} %</p>
+            </div>
+          );
+        })}
+      </ScrollShadow>
+      <Button onClick={handleDownloadPdf}>Descargar PDF</Button>
+      
+      {/* Nuevo botón para imprimir el documento */}
+      <Button onClick={handlePrint}>Imprimir PDF</Button>
     </div>
   );
 }
