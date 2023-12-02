@@ -11,5 +11,6 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: '.vitest/setup',
     include: ['**/test.{ts,tsx}']
-  }
+  },
+  base: '/rec-facial'
 })
