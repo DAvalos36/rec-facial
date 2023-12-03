@@ -15,7 +15,8 @@
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"lint": "eslint src --max-warnings=0",
-		"typecheck": "tsc --project tsconfig.json --noEmit"
+		"typecheck": "tsc --project tsconfig.json --noEmit",
+		"deploy": "gh-pages -d dist"
 	},
 	"dependencies": {
 		"@lottiefiles/react-lottie-player": "^3.5.3",
@@ -45,6 +46,7 @@
 		"@vitejs/plugin-react-swc": "^3.4.1",
 		"@vitest/ui": "^0.34.6",
 		"autoprefixer": "^10.4.16",
+		"gh-pages": "^6.1.0",
 		"happy-dom": "^12.10.3",
 		"postcss": "^8.4.31",
 		"tailwindcss": "^3.3.5",
