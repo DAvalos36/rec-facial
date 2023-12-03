@@ -104,7 +104,7 @@ const App: React.FC = () => {
 							});
 
 							// faceapi.draw.drawDetections(canvas, resizedDetections);
-						}, 1000);
+						}, 41);
 					}
 				});
 			}
