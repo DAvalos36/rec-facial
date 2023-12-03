@@ -24,6 +24,7 @@ function Principal() {
 
   const [location, setLocation] = useLocation();
 	const link = useStoreImg((s) => s.link);
+  const [linkCanva, setLinkCanva] = useState('')
 
   useEffect(() => {
     if (link === "") {
@@ -97,6 +98,10 @@ function Principal() {
 
       setAlumnosEncontrados(ac);
       setCargando(false)
+
+      // save canvas image as data url (png format by default)
+      const dataURL = canvas.toDataURL();
+      setLinkCanva(dataURL);
     }
   }
 
@@ -127,7 +132,7 @@ function Principal() {
         </ScrollShadow>
 
         <div className="hidden">
-          <Pdf ref={componentRef} imagen={link} alumnos={alumnosEncontrados} />
+          <Pdf ref={componentRef} imagen={linkCanva} alumnos={alumnosEncontrados} />
         </div>
 
         <Button className="mx-20" color="warning" variant="shadow" onClick={() => handlePrint() } isLoading={cargando}>Guardar PDF</Button>
