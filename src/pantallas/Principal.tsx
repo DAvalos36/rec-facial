@@ -33,7 +33,7 @@ function Principal() {
     
 
   async function cargarModeloEntrenado() {
-    const l: string[] = await (await fetch("/faceDescriptors.json")).json();
+    const l: string[] = await (await fetch("faceDescriptors.json")).json();
     const labeledFaceDescriptors: faceapi.LabeledFaceDescriptors[] = [];
     l.forEach((ld) => {
       labeledFaceDescriptors.push(faceapi.LabeledFaceDescriptors.fromJSON(ld));
@@ -117,7 +117,7 @@ function Principal() {
                   name={nombre}
                   description={alumno.nc}
                   avatarProps={{
-                    src: `/fotos/${alumno.nc}.jpg`,
+                    src: `fotos/${alumno.nc}.jpg`,
                   }}
                 />
                 <p className="px-6 font-bold text-orange-700">{precision.toString().split('.')[0]} %</p>

@@ -33,7 +33,7 @@ const App: React.FC = () => {
 	}, [link]);
 
 	async function cargarModeloEntrenado() {
-		const l: string[] = await (await fetch("/faceDescriptors.json")).json();
+		const l: string[] = await (await fetch("faceDescriptors.json")).json();
 		const labeledFaceDescriptors: faceapi.LabeledFaceDescriptors[] = [];
 		l.forEach((ld) => {
 			labeledFaceDescriptors.push(faceapi.LabeledFaceDescriptors.fromJSON(ld));
