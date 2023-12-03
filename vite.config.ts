@@ -12,5 +12,5 @@ export default defineConfig({
     setupFiles: '.vitest/setup',
     include: ['**/test.{ts,tsx}']
   },
-  base: '/rec-facial'
+  // base: 'https://davalos36.github.io/rec-facial'
 })

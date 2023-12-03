@@ -65,7 +65,7 @@ const App: React.FC = () => {
 						setInterval(async () => {
 							const detections = await faceapi
 								.detectAllFaces(
-									videoRef.current,
+									videoRef.current as unknown as faceapi.TNetInput,
 									new faceapi.TinyFaceDetectorOptions(),
 								)
 								.withFaceLandmarks()
