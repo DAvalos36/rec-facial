@@ -1,11 +1,19 @@
 import { Button, Image } from '@nextui-org/react'
-import React from 'react'
+import { useEffect } from 'react';
 import { useLocation } from 'wouter'
+import { useStoreImg } from 'zustand-img';
 
 type Props = {}
 
 function Inicio({}: Props) {
   const [location, setLocation] = useLocation();
+
+  const seLink = useStoreImg(s => s.setLink)
+
+  useEffect(() => {
+    seLink('')
+  }, [])
+  
 
   return (
     <div className='min-h-screen flex justify-center self-center' style={{backgroundColor: '#F2F2F2'}}>
