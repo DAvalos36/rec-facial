@@ -70,7 +70,11 @@ function Principal() {
       const results = fullFaceDescriptions.map((fd) =>
         faceMatcher.findBestMatch(fd.descriptor)
       );
-
+      const alto = img.naturalHeight;
+      const ancho = img.naturalWidth;
+      
+      let tamFuente = Math.floor(((ancho * alto) * 85) / 16184320);
+      tamFuente = tamFuente < 20 ? 20 : tamFuente;
       const ac: infoEncontrado[] = [];
 
       results.forEach((bestMatch, i) => {
@@ -83,7 +87,7 @@ function Principal() {
           const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno} ${nC}`;
 
           // Dibujar un cuadro alrededor de cada rostro
-          const drawBox = new faceapi.draw.DrawBox(box, { label: nombre, drawLabelOptions: { fontSize: 60 } });
+          const drawBox = new faceapi.draw.DrawBox(box, { label: nombre, drawLabelOptions: { fontSize: tamFuente } });
           drawBox.draw(canvas);
 
           ac.push({ nc: nC, distancia: bestMatch.distance });
