@@ -218,11 +218,11 @@ const App: React.FC = () => {
 									</ModalBody>
 									<ModalFooter>
 										<Button color="default" variant="light" onPress={onClose}>
-											Cancelar
+											Cerrar
 										</Button>
-										<Button color="warning" onPress={fotoTomada}>
+										{/* <Button color="warning" onPress={fotoTomada}>
 											Tomar foto
-										</Button>
+										</Button> */}
 									</ModalFooter>
 								</>
 							)}
