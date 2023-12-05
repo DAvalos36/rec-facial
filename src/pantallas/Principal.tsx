@@ -80,10 +80,10 @@ function Principal() {
         if (encontrado) {
           nC = nC.split("_")[0];
           const alumno = infoAlumnos.get(nC);
-          const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno}`;
+          const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno} ${nC}`;
 
           // Dibujar un cuadro alrededor de cada rostro
-          const drawBox = new faceapi.draw.DrawBox(box, { label: nombre });
+          const drawBox = new faceapi.draw.DrawBox(box, { label: nombre, drawLabelOptions: { fontSize: 60 } });
           drawBox.draw(canvas);
 
           ac.push({ nc: nC, distancia: bestMatch.distance });

@@ -89,9 +89,12 @@ const App: React.FC = () => {
 								if (encontrado) {
 									nC = nC.split("_")[0];
 									const alumno = infoAlumnos.get(nC);
-									const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno}`;
+									const nombre = `${alumno?.nombre} ${alumno?.apellido_paterno} ${alumno?.apellido_materno} ${nC}`;
 									const drawBox = new faceapi.draw.DrawBox(box, {
 										label: nombre,
+										drawLabelOptions: {
+											fontSize: 20
+										}
 									});
 									drawBox.draw(canvas);
 								} else {
