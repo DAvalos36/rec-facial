@@ -106,7 +106,7 @@ function Principal() {
   }
 
   return (
-    <div className="flex-col min-h-screen flex justify-center self-center" style={{ backgroundColor: '#F2F2F2' }}>
+    <div className="flex-col min-h-[90vh] flex justify-center self-center" style={{ backgroundColor: '#F2F2F2' }}>
       <div className="max-w-fit py-4 flex justify-center self-center" id="miDiv">
         <img className='hidden' ref={imgRef} src={link} onLoad={a} alt="FOTO" id="imgPrueba contenedor-imagen" />
       </div>

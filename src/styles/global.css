@@ -2,3 +2,9 @@ canvas {
     width: 75%;
     border-radius: 20px;
 }
+
+.cel {
+    @media (max-width: 768px) {
+        min-height: 88vh;
+    }
+}

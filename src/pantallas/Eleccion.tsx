@@ -157,7 +157,7 @@ const App: React.FC = () => {
 
 	return (
 		<div
-			className="min-h-screen flex justify-center self-center"
+			className="min-h-screen cel flex justify-center self-center px-4"
 			style={{ backgroundColor: "#F2F2F2" }}
 		>
 			<div className="max-w-md py-2 flex justify-center self-center flex-col">
