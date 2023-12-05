@@ -1,6 +1,7 @@
 import React, { forwardRef, RefObject } from "react";
 import { infoEncontrado } from "../pantallas/Principal";
 import infoAlumno from "../infoAlumno";
+import { Image, User } from "@nextui-org/react";
 
 interface Props {
   alumnos: infoEncontrado[];
@@ -15,35 +16,41 @@ export const Pdf = forwardRef<HTMLDivElement, Props>((props, ref) => {
         @page {
           margin: 1cm 1cm 1cm 1cm;
         }
+        .centered-image {
+          display: block;
+          margin: 0 auto;
+        }
       `}
       </style>
-      <div ref={ref as RefObject<HTMLDivElement>} className="w-full px-8 ">
+      <div ref={ref as RefObject<HTMLDivElement>} className="w-full px-8">
         <div className="mt-4">
-          <p className="mb-3 font-medium text-lg">La imagen usada fue:</p>
-          <img src={props.imagen} />
-          <p>
-            Los estudiantes encontrados teniendo en cuenta a su numero de
-            control y su nombre fueron los siguientes:
+          <Image className="my-2 rounded-none centered-image" width='150' src="Logo.webp"></Image>
+          <h2 className="my-4 text-center font-black text-2xl">Reporte de personas identificadas</h2>
+          <p className="my-2 font-medium text-lg">La imagen usada fue:</p>
+          <Image className="my-4 centered-image" width='90%' src={props.imagen}></Image>
+          <p className="my-2 font-medium text-lg">
+            Listado de personas identificadas:
           </p>
 
           {props.alumnos.map((alumno) => (
-            <div key={alumno.nc}>
-              <p className="mb-3 font-medium text-lg">
-                <br />
-                <b>
-                  Nombre: {infoAlumno.get(alumno.nc)?.nombre}
-                  {infoAlumno.get(alumno.nc)?.apellido_paterno}
-                  {infoAlumno.get(alumno.nc)?.apellido_materno}
-                </b>
-              </p>
-              <p>
-                <br />
-                <b>Numero de control: {alumno.nc.toString()}</b>
-                <b></b>
-              </p>
+            <div className="w-full centered-image my-4" key={alumno.nc}>
+              <User
+              className=""
+                  name={(<span style={{ fontSize: "1rem" }}>
+                    {infoAlumno.get(alumno.nc)?.nombre +
+                    " " +
+                    infoAlumno.get(alumno.nc)?.apellido_paterno +
+                    " " +
+                    infoAlumno.get(alumno.nc)?.apellido_materno}
+                    </span>)}
+                  description={(<span>{alumno.nc}</span>)}
+                  avatarProps={{
+                    src: `fotos/${alumno.nc}.jpg`,
+                    size: 'lg',
+                  }}
+                />
             </div>
           ))}
-          <p></p>
         </div>
       </div>
     </>

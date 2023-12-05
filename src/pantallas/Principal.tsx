@@ -106,12 +106,12 @@ function Principal() {
   }
 
   return (
-    <div className="flex-col min-h-[90vh] flex justify-center self-center" style={{ backgroundColor: '#F2F2F2' }}>
+    <div className="flex-col min-h-screen cel flex justify-center self-center" style={{ backgroundColor: '#F2F2F2' }}>
       <div className="max-w-fit py-4 flex justify-center self-center" id="miDiv">
         <img className='hidden' ref={imgRef} src={link} onLoad={a} alt="FOTO" id="imgPrueba contenedor-imagen" />
       </div>
 
-      <div className="py-unit-sm flex justify-center self-center flex-col mb-7">
+      <div className="py-unit-sm px-unit-sm flex justify-center self-center flex-col mb-7">
         <ScrollShadow className="w-full">
           {alumnosEncontrados.map((alumno, index) => {
             const nombre = `${infoAlumnos.get(alumno.nc)?.nombre} ${infoAlumnos.get(alumno.nc)?.apellido_paterno} ${infoAlumnos.get(alumno.nc)?.apellido_materno}`;
@@ -125,7 +125,7 @@ function Principal() {
                     src: `fotos/${alumno.nc}.jpg`,
                   }}
                 />
-                <p className="px-6 font-bold text-orange-700">{precision.toString().split('.')[0]} %</p>
+                <p className="pl-4 font-bold text-orange-700">{precision.toString().split('.')[0]} %</p>
               </div>
             );
           })}
