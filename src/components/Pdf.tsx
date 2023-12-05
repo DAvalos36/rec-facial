@@ -23,34 +23,40 @@ export const Pdf = forwardRef<HTMLDivElement, Props>((props, ref) => {
       `}
       </style>
       <div ref={ref as RefObject<HTMLDivElement>} className="w-full px-8">
-        <div className="mt-4">
-          <Image className="my-2 rounded-none centered-image" width='150' src="Logo.webp"></Image>
+        <div className="mt-4 ">
+          <Image className="my-2 rounded-none centered-image" width='150' src="Logo.webp"/>
           <h2 className="my-4 text-center font-black text-2xl">Reporte de personas identificadas</h2>
-          <p className="my-2 font-medium text-lg">La imagen usada fue:</p>
-          <Image className="my-4 centered-image" width='90%' src={props.imagen}></Image>
-          <p className="my-2 font-medium text-lg">
+          <p className="my-2 font-medium text-lg text-center">La imagen usada fue:</p>
+          <Image removeWrapper className="my-4 centered-image" width='90%' src={props.imagen}/>
+          <p className="my-2 font-medium text-lg text-center">
             Listado de personas identificadas:
           </p>
 
-          {props.alumnos.map((alumno) => (
-            <div className="w-full centered-image my-4" key={alumno.nc}>
-              <User
-              className=""
-                  name={(<span style={{ fontSize: "1rem" }}>
-                    {infoAlumno.get(alumno.nc)?.nombre +
-                    " " +
-                    infoAlumno.get(alumno.nc)?.apellido_paterno +
-                    " " +
-                    infoAlumno.get(alumno.nc)?.apellido_materno}
-                    </span>)}
-                  description={(<span>{alumno.nc}</span>)}
-                  avatarProps={{
-                    src: `fotos/${alumno.nc}.jpg`,
-                    size: 'lg',
-                  }}
-                />
-            </div>
-          ))}
+          <table className="w-full">
+							<thead>
+								<tr>
+									<th className="px-4 py-2">Numero de control</th>
+									<th className="px-4 py-2">Nombre</th>
+									<th className="px-4 py-2">Porcentaje</th>
+								</tr>
+							</thead>
+							<tbody>
+								{props.alumnos.map((alumno) => (
+									<tr key={alumno.nc}>
+										<td className="border px-4 py-2">{alumno.nc.toString()}</td>
+										<td className="border px-4 py-2">
+											{infoAlumno.get(alumno.nc)?.nombre}
+											{infoAlumno.get(alumno.nc)?.apellido_paterno}
+											{infoAlumno.get(alumno.nc)?.apellido_materno}
+										</td>
+										<td className="border px-4 py-2">
+											{((1 - alumno.distancia) * 100).toString().split(".")[0]}{" "}
+											%
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
         </div>
       </div>
     </>
