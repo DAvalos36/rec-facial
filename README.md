@@ -8,7 +8,7 @@ PhotoWho ofrece capacidades avanzadas de reconocimiento facial, funcionando tant
 
 - David Octavio Avalos Loya
 - Yaritza Corazón Leyva Portillo
-- Jesús Eduardo Hernández Castro
+- Oscar Giovanni Figueroa Talamantes
 - Kenneth Gerardo Aguirre Domínguez
 
 ## Características Principales
