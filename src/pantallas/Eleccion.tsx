@@ -16,7 +16,7 @@ import { useStoreImg } from "zustand-img";
 import { useLocation } from "wouter";
 
 const App: React.FC = () => {
-	const images = ["amigos1.webp", "amigos2.png", "amigos3.jpeg"];
+	const images = ["amigos1.jpg", "amigos1.webp", "amigos.jpeg", "amigos2.png", "amigos2.jpeg", "amigos3.jpeg"];
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const videoRef = useRef<HTMLVideoElement | null>(null);
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -164,7 +164,7 @@ const App: React.FC = () => {
 			style={{ backgroundColor: "#F2F2F2" }}
 		>
 			<div className="max-w-md py-2 flex justify-center self-center flex-col">
-				<ImageSlider images={images} interval={5000} />{" "}
+				<ImageSlider images={images} interval={3000} />{" "}
 				{/* Cambiar el intervalo según sea necesario */}
 				<div className="py-6 flex justify-around">
 					<Button
